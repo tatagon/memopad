@@ -82,14 +82,9 @@ function remove(id) {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .header {
   margin-bottom: 20px;
-}
-
-.header h1 {
-  margin: 0;
-  color: #333;
 }
 
 .form-group {
@@ -106,6 +101,7 @@ function remove(id) {
 input[type='text'] {
   width: 100%;
   padding: 10px;
+  box-sizing: border-box;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
@@ -115,6 +111,7 @@ textarea {
   width: 100%;
   height: 30em;
   padding: 10px;
+  box-sizing: border-box;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
@@ -140,10 +137,9 @@ button {
 .save-btn {
   background-color: #4caf50;
   color: white;
-}
 
-.save-btn:hover {
-  background-color: #45a049;
+  &:hover {
+  }
 }
 
 .cancel-btn {

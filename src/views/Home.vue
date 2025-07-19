@@ -11,9 +11,8 @@
           <h3>{{ memo.title || '無題' }}</h3>
           <div class="memo-actions">
             <router-link class="new-btn" :to="{ name: 'edit', params: { id: memo.id } }"
-              >編集</router-link
+              >編集する</router-link
             >
-            <button @click="remove(memo.id)" class="delete-btn">削除</button>
           </div>
         </div>
         <p class="memo-content">{{ memo.content }}</p>
@@ -51,15 +50,18 @@ function remove(id) {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  @media (max-width: 768px) {
+  }
 }
 
 .new-btn {
+  font-size: 0.95em;
   text-decoration: none;
   background-color: #4caf50;
   color: white;
@@ -68,10 +70,6 @@ function remove(id) {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
-
-.new-btn:hover {
-  background-color: #45a049;
 }
 
 .empty-state {
