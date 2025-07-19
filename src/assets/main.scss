@@ -1,0 +1,39 @@
+@charset "utf-8";
+@use '@/assets/base.scss' as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Damion&family=Noto+Sans+JP:wght@100..900&display=swap');
+
+html,
+body {
+  font-family: $base_ff;
+  background-color: $base_color;
+}
+
+#app {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+
+  & > *:not(:first-child) {
+    margin-top: 1rem;
+  }
+
+  h1 {
+    font-size: 3em;
+    font-family: $logo_ff;
+    text-align: center;
+    a {
+      text-decoration: none;
+      &:visited {
+        color: currentColor;
+      }
+    }
+  }
+
+  h2 {
+    font-size: 2em;
+    text-align: center;
+  }
+}
