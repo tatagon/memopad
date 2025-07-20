@@ -11,8 +11,9 @@
           <h3>{{ memo.title || '無題' }}</h3>
           <div class="memo-actions">
             <router-link class="new-btn" :to="{ name: 'edit', params: { id: memo.id } }"
-              >編集する</router-link
+              >編集</router-link
             >
+            <button class="delete-btn" @click="remove(memo.id)">削除</button>
           </div>
         </div>
         <p class="memo-content">{{ memo.content }}</p>
