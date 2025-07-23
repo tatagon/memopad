@@ -29,4 +29,7 @@ coverage
 
 *.tsbuildinfo
 
+# 追加
+node_modules/
+.firebase/
 .env
