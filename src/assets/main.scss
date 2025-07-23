@@ -20,14 +20,16 @@ body {
   box-sizing: border-box;
 
   & > *:not(:first-child) {
-    margin-top: 1rem;
+    margin-top: 2rem;
   }
 
   h1 {
+    color: $base_text_color;
     font-size: 3em;
     font-family: $logo_ff;
     text-align: center;
     a {
+      color: currentColor;
       text-decoration: none;
       &:visited {
         color: currentColor;
@@ -41,5 +43,89 @@ body {
     @media (max-width: 768px) {
       font-size: 1.5em;
     }
+  }
+}
+
+.form {
+  .label {
+    font-size: 0.9em;
+    margin-bottom: 0.25rem;
+    .required {
+      color: rgb(225, 0, 0);
+    }
+  }
+  input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    font-size: 1em;
+    margin-bottom: 0.5rem;
+  }
+  .submit-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    button[type='submit'] {
+      cursor: pointer;
+      font-family: $base_ff;
+      color: #fff;
+      font-size: 1em;
+      font-weight: 500;
+      width: 40%;
+      margin-left: auto;
+      // min-width: 280px;
+      margin-right: auto;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 0.25rem;
+      margin-bottom: 0.5rem;
+      background-color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+
+.providers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 0;
+  .provider {
+    cursor: pointer;
+    list-style: none;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5rem;
+    font-size: 1em;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    background-color: #fff;
+    min-height: 50px;
+  }
+}
+
+.or {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  white-space: nowrap;
+  padding-top: 2em;
+  &::before,
+  &::after {
+    content: '';
+    display: block;
+    flex: 50%;
+    height: 1px;
+    background-color: currentColor;
+    opacity: 0.5;
   }
 }
