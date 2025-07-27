@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="header">
-      <h2>メモ一覧 ({{ memoCount }}件)</h2>
+      <h2>メモ一覧 ({{ memoCount || 0 }}件)</h2>
       <button @click="goToNew" class="new-btn">新規作成</button>
     </div>
 
@@ -10,17 +10,16 @@
         <div class="memo-header">
           <h3>{{ memo.title || '無題' }}</h3>
           <div class="memo-actions">
-            <router-link class="new-btn" :to="{ name: 'edit', params: { id: memo.id } }"
+            <router-link class="new-btn" :to="{ name: 'edit', params: { id: memo.numericId } }"
               >編集</router-link
             >
-            <button class="delete-btn" @click="remove(memo.id)">削除</button>
+            <button class="delete-btn" @click="deleteById(memo.id)">削除</button>
           </div>
         </div>
         <p class="memo-content">{{ memo.content }}</p>
-        <div class="memo-date">ID: {{ memo.id }}</div>
+        <div class="memo-date">ID: {{ memo.numericId }}</div>
       </div>
     </div>
-
     <div v-else class="empty-state">
       <p>メモがありません</p>
       <p>新規作成ボタンからメモを作成してください</p>
@@ -31,12 +30,15 @@
 <script setup>
 import { useMemoStore } from '@/store/memo'
 import { useRouter } from 'vue-router'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 
 const memoStore = useMemoStore()
 const router = useRouter()
 
-// const memos = computed(() => memoStore.memos)
+onMounted(async () => {
+  await memoStore.fetchMemos()
+})
+
 const memos = computed(() => memoStore.getMemos)
 const memoCount = computed(() => memoStore.getCount)
 
@@ -44,9 +46,9 @@ function goToNew() {
   router.push('/new')
 }
 
-function remove(id) {
+async function deleteById(id) {
   if (confirm('このメモを削除しますか？')) {
-    memoStore.delete(id)
+    await memoStore.deleteMemo(id)
   }
 }
 </script>

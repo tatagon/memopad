@@ -15,6 +15,6 @@ import { useMemoStore } from '../store/memo'
 
 const route = useRoute()
 const memoStore = useMemoStore()
-const id = computed(() => parseInt(route.params.id))
+const id = computed(() => route.params.id)
 const memo = computed(() => memoStore.getMemoById(id.value))
 </script>

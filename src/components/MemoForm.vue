@@ -17,14 +17,14 @@
     <div class="button-group">
       <button @click="cancel" class="cancel-btn">キャンセル</button>
       <button @click="save" class="save-btn">保存</button>
-      <button @click="remove(props.memo.id)" v-if="memo.id">削除</button>
+      <button @click="remove" v-if="memo.id">削除</button>
     </div>
   </main>
 </template>
 
 <script setup>
 import { useMemoStore } from '@/store/memo'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { ref, computed, watch } from 'vue'
 
 const props = defineProps({
@@ -35,9 +35,10 @@ const props = defineProps({
 })
 
 const router = useRouter()
+const route = useRoute()
 const memoStore = useMemoStore()
 
-const isEdit = computed(() => !!props.memo.id)
+const isEdit = computed(() => route.name === 'edit')
 const title = ref(props.memo.title || '')
 const content = ref(props.memo.content || '')
 watch(
@@ -55,17 +56,18 @@ function save() {
     return
   }
 
-  let memo = {
+  const modMemo = {
     title: title.value,
     content: content.value,
   }
 
-  // 編集の場合はidを渡す
   if (isEdit.value) {
-    memo.id = props.memo.id
+    memoStore.updateMemo(props.memo.id, modMemo)
+  } else {
+    memoStore.createMemo(modMemo)
   }
 
-  memoStore.save(memo)
+  // memoStore.save(memo)
 
   router.push('/')
 }
@@ -74,9 +76,9 @@ function cancel() {
   router.push('/')
 }
 
-function remove(id) {
+function remove() {
   if (confirm('このメモを削除しますか？')) {
-    memoStore.delete(id)
+    memoStore.deleteMemo(props.memo.id)
     router.push('/')
   }
 }
