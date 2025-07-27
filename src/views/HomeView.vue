@@ -36,6 +36,7 @@ const memoStore = useMemoStore()
 const router = useRouter()
 
 onMounted(async () => {
+  memoStore.resetMemos()
   await memoStore.fetchMemos()
 })
 

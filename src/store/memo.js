@@ -65,6 +65,9 @@ export const useMemoStore = defineStore('memo', {
       await deleteDoc(memoRef)
       await this.fetchMemos()
     },
+    resetMemos() {
+      this.memos = []
+    },
   },
   persist: true,
 })

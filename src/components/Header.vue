@@ -15,6 +15,7 @@
 import { RouterLink, useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import { auth } from '@/firebase/main'
+import { useMemoStore } from '@/store/memo'
 import {
   onAuthStateChanged,
   signOut,
@@ -27,6 +28,7 @@ import {
 
 const userName = ref('')
 const router = useRouter()
+const memoStore = useMemoStore()
 
 onMounted(() => {
   onAuthStateChanged(auth, (user) => {
@@ -36,6 +38,7 @@ onMounted(() => {
 
 const logout = async () => {
   if (confirm('本当にログアウトしますか？')) {
+    memoStore.resetMemos()
     await signOut(auth)
     router.push('/login')
   }
