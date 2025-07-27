@@ -1,6 +1,15 @@
 import { defineStore } from 'pinia'
 import { db, auth } from '../firebase/main'
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore'
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+  query,
+  orderBy,
+} from 'firebase/firestore'
 
 export const useMemoStore = defineStore('memo', {
   state: () => {
@@ -24,7 +33,8 @@ export const useMemoStore = defineStore('memo', {
       const user = auth.currentUser
       if (!user) return
       const memosRef = collection(db, 'users', user.uid, 'memos')
-      const snapshot = await getDocs(memosRef)
+      const q = query(memosRef, orderBy('createDate', 'desc'))
+      const snapshot = await getDocs(q)
       this.memos = snapshot.docs.map((doc) => ({
         id: doc.id,
         numericId: doc.data().numericId || Date.now(),
