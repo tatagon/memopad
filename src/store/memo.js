@@ -29,6 +29,7 @@ export const useMemoStore = defineStore('memo', {
     },
   },
   actions: {
+    // 取得
     async fetchMemos() {
       const user = auth.currentUser
       if (!user) return
@@ -41,13 +42,21 @@ export const useMemoStore = defineStore('memo', {
         ...doc.data(),
       }))
     },
+    // 作成
     async createMemo(memo) {
       const user = auth.currentUser
       if (!user) return
       const memosRef = collection(db, 'users', user.uid, 'memos')
       const snapshot = await getDocs(memosRef)
+      let maxNumericId = 0
+      snapshot.docs.forEach((doc) => {
+        const n = doc.data().numericId
+        if (typeof n === 'number' && n > maxNumericId) {
+          maxNumericId = n
+        }
+      })
       const data = {
-        numericId: snapshot.docs.length + 1,
+        numericId: maxNumericId + 1,
         title: memo.title || '無題',
         content: memo.content,
         createDate: new Date(),
@@ -56,6 +65,7 @@ export const useMemoStore = defineStore('memo', {
       await addDoc(memosRef, data)
       await this.fetchMemos()
     },
+    // 更新
     async updateMemo(id, modMemo) {
       const user = auth.currentUser
       if (!user) return
@@ -68,6 +78,7 @@ export const useMemoStore = defineStore('memo', {
       await updateDoc(memoRef, data)
       await this.fetchMemos()
     },
+    // 削除
     async deleteMemo(id) {
       const user = auth.currentUser
       if (!user) return
