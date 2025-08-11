@@ -9,12 +9,14 @@ import {
   updateDoc,
   query,
   orderBy,
+  onSnapshot,
 } from 'firebase/firestore'
 
 export const useMemoStore = defineStore('memo', {
   state: () => {
     return {
       memos: [],
+      unsubscribe: null,
     }
   },
   getters: {
@@ -29,19 +31,6 @@ export const useMemoStore = defineStore('memo', {
     },
   },
   actions: {
-    // 取得
-    async fetchMemos() {
-      const user = auth.currentUser
-      if (!user) return
-      const memosRef = collection(db, 'users', user.uid, 'memos')
-      const q = query(memosRef, orderBy('createDate', 'desc'))
-      const snapshot = await getDocs(q)
-      this.memos = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        numericId: doc.data().numericId || Date.now(),
-        ...doc.data(),
-      }))
-    },
     // 作成
     async createMemo(memo) {
       const user = auth.currentUser
@@ -63,7 +52,6 @@ export const useMemoStore = defineStore('memo', {
         updateDate: new Date(),
       }
       await addDoc(memosRef, data)
-      await this.fetchMemos()
     },
     // 更新
     async updateMemo(id, modMemo) {
@@ -76,7 +64,6 @@ export const useMemoStore = defineStore('memo', {
         updateDate: new Date(),
       }
       await updateDoc(memoRef, data)
-      await this.fetchMemos()
     },
     // 削除
     async deleteMemo(id) {
@@ -84,7 +71,41 @@ export const useMemoStore = defineStore('memo', {
       if (!user) return
       const memoRef = doc(db, 'users', user.uid, 'memos', id)
       await deleteDoc(memoRef)
-      await this.fetchMemos()
+    },
+    // リアルタイム監視を開始
+    startRealtimeListener() {
+      const user = auth.currentUser
+      if (!user) return
+
+      // 既にリスナーが動作している場合は停止
+      if (this.unsubscribe) {
+        this.unsubscribe()
+        this.unsubscribe = null
+      }
+
+      const memosRef = collection(db, 'users', user.uid, 'memos')
+      const q = query(memosRef, orderBy('createDate', 'desc'))
+
+      this.unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          this.memos = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            numericId: doc.data().numericId || Date.now(),
+            ...doc.data(),
+          }))
+        },
+        (error) => {
+          console.error('Firestore listener error:', error)
+        },
+      )
+    },
+    // リスナーを停止
+    stopRealtimeListener() {
+      if (this.unsubscribe) {
+        this.unsubscribe()
+        this.unsubscribe = null
+      }
     },
     resetMemos() {
       this.memos = []

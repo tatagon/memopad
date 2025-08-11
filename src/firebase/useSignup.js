@@ -11,8 +11,10 @@ const signup = async (name, email, password) => {
     if (userCredential && userCredential.user) {
       await updateProfile(userCredential.user, { displayName: name })
     }
+    return userCredential
   } catch (e) {
     error.value = e.message
+    throw e
   }
 }
 export function useSignup() {

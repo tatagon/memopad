@@ -7,9 +7,11 @@ const error = ref('')
 const login = async (email, password) => {
   error.value = ''
   try {
-    await signInWithEmailAndPassword(auth, email, password)
+    const result = await signInWithEmailAndPassword(auth, email, password)
+    return result
   } catch (e) {
     error.value = 'ログインに失敗しました: ' + e.message
+    throw e
   }
 }
 

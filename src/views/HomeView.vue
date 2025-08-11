@@ -30,14 +30,38 @@
 <script setup>
 import { useMemoStore } from '@/store/memo'
 import { useRouter } from 'vue-router'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from '@/firebase/main'
 
 const memoStore = useMemoStore()
 const router = useRouter()
 
-onMounted(async () => {
+let unsubscribeAuth = null
+
+onMounted(() => {
   memoStore.resetMemos()
-  await memoStore.fetchMemos()
+  
+  // 認証状態を監視してリスナーを管理
+  unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // ユーザーがログインしている場合、リスナーを開始
+      memoStore.startRealtimeListener()
+    } else {
+      // ユーザーがログアウトしている場合、リスナーを停止
+      memoStore.stopRealtimeListener()
+      memoStore.resetMemos()
+    }
+  })
+})
+
+onUnmounted(() => {
+  // 認証リスナーを停止
+  if (unsubscribeAuth) {
+    unsubscribeAuth()
+  }
+  // Firestoreリスナーを停止
+  memoStore.stopRealtimeListener()
 })
 
 const memos = computed(() => memoStore.getMemos)

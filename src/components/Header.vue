@@ -56,6 +56,10 @@ const handleDeleteAccount = async () => {
     } else if (providerId === 'password') {
       const email = user.email
       const password = prompt('パスワードを入力してください')
+      if (!password) {
+        alert('パスワードが入力されませんでした')
+        return
+      }
       const credential = EmailAuthProvider.credential(email, password)
       await reauthenticateWithCredential(user, credential)
     }
